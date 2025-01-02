@@ -1,0 +1,37 @@
+{
+  "name": "trunk-recorder-dashboard",
+  "version": "1.0.0",
+  "description": "A real-time dashboard for visualizing trunk-recorder radio activity across different talkgroups",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "radio",
+    "monitoring",
+    "dashboard",
+    "trunk-recorder",
+    "real-time",
+    "websockets"
+  ],
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LumenPrima/trunk-recorder-dashboard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LumenPrima/trunk-recorder-dashboard/issues"
+  },
+  "homepage": "https://github.com/LumenPrima/trunk-recorder-dashboard#readme",
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "dotenv": "^16.3.1",
+    "express": "^4.21.2",
+    "mongodb": "^6.12.0",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1"
+  }
+}

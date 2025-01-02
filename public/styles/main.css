@@ -1,0 +1,408 @@
+:root {
+  --bg-color: #f5f5f5;
+  --text-color: #333;
+  --card-bg: white;
+  --border-color: #ddd;
+  --secondary-text: #666;
+  --progress-bg: #eee;
+  --button-bg: #f8f9fa;
+  --button-hover: #e9ecef;
+  --button-active: #007bff;
+  --button-active-hover: #0056b3;
+  --glow-opacity: 0.1;
+}
+
+[data-theme="dark"] {
+  --bg-color: #1a1a1a;
+  --text-color: #e0e0e0;
+  --card-bg: #2d2d2d;
+  --border-color: #444;
+  --secondary-text: #999;
+  --progress-bg: #444;
+  --button-bg: #333;
+  --button-hover: #444;
+  --button-active: #1a73e8;
+  --button-active-hover: #1557b0;
+  --glow-opacity: 0.3;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 12px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Header and Controls */
+.header-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.header-container h1 {
+    margin: 0;
+    color: var(--text-color);
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.loading-progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 10px;
+}
+
+.progress-text {
+    font-size: 0.8em;
+    color: #666;
+}
+
+.progress-bar {
+    width: 100px;
+    height: 4px;
+    background-color: #eee;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    width: 0%;
+    height: 100%;
+    background-color: #007bff;
+    transition: width 0.3s ease;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+.loading-progress.active .progress-text {
+    animation: pulse 1.5s infinite;
+}
+
+.theme-toggle {
+    background: transparent;
+    border: none;
+    padding: 6px;
+    cursor: pointer;
+    font-size: 1.2em;
+    color: var(--text-color);
+    transition: all 0.2s ease;
+    margin-right: 8px;
+}
+
+.theme-toggle:hover {
+    opacity: 0.8;
+}
+
+.filter-button {
+    background: var(--button-bg);
+    border: 1px solid var(--border-color);
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    color: var(--secondary-text);
+    transition: all 0.2s ease;
+}
+
+.filter-button.active {
+    background: #007bff;
+    color: white;
+    border-color: #0056b3;
+}
+
+.filter-button:hover {
+    background: #e9ecef;
+}
+
+.filter-button.active:hover {
+    background: #0056b3;
+}
+
+.filter-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Control Group and Sort Buttons */
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.sort-buttons {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #f8f9fa;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.sort-buttons span {
+    color: #666;
+    font-size: 0.9em;
+    margin-right: 5px;
+}
+
+.sort-button {
+    background: transparent;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.9em;
+    color: #666;
+    transition: all 0.2s ease;
+}
+
+.sort-button:hover {
+    background: #e9ecef;
+}
+
+.sort-button.active {
+    background: #007bff;
+    color: white;
+}
+
+/* Color Key */
+.color-key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+.key-item {
+    display: flex;
+    align-items: center;
+    font-size: 0.8em;
+    color: #666;
+}
+
+.key-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 4px;
+    display: inline-block;
+}
+
+.key-dot.call {
+    background-color: #007bff;
+    box-shadow: 0 0 4px rgba(0,123,255,0.5);
+}
+
+.key-dot.join { background-color: #28a745; }
+.key-dot.location { background-color: #17a2b8; }
+.key-dot.data { background-color: #6f42c1; }
+.key-dot.ans_req { background-color: #fd7e14; }
+.key-dot.ackresp { background-color: #20c997; }
+.key-dot.on { background-color: #ffc107; }
+.key-dot.default { background-color: #6c757d; }
+
+/* Talkgroup Cards */
+@keyframes cardGlow {
+    0% { box-shadow: 0 0 30px rgba(var(--glow-color), 0.8); }
+    50% { box-shadow: 0 0 20px rgba(var(--glow-color), 0.6); }
+    100% { box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+}
+
+.talkgroup {
+    border: 1px solid var(--border-color);
+    padding: 8px;
+    margin: 6px;
+    display: inline-block;
+    background-color: var(--card-bg);
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,var(--glow-opacity));
+    width: 300px;
+    vertical-align: top;
+    position: relative;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.talkgroup.glow-call { --glow-color: 0,123,255; animation: cardGlow 5s ease-out; }
+.talkgroup.glow-join { --glow-color: 40,167,69; animation: cardGlow 5s ease-out; }
+.talkgroup.glow-location { --glow-color: 23,162,184; animation: cardGlow 5s ease-out; }
+.talkgroup.glow-data { --glow-color: 111,66,193; animation: cardGlow 5s ease-out; }
+.talkgroup.glow-ans_req { --glow-color: 253,126,20; animation: cardGlow 5s ease-out; }
+.talkgroup.glow-ackresp { --glow-color: 32,201,151; animation: cardGlow 5s ease-out; }
+.talkgroup.glow-on { --glow-color: 255,193,7; animation: cardGlow 5s ease-out; }
+
+.timestamp {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    font-size: 0.75em;
+    color: var(--secondary-text);
+    background: var(--button-bg);
+    padding: 1px 4px;
+    border-radius: 3px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.stats {
+    display: flex;
+    gap: 10px;
+    font-size: 0.75em;
+    color: var(--secondary-text);
+    margin-top: 4px;
+}
+
+.stat-item {
+    background: var(--button-bg);
+    padding: 1px 6px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s;
+}
+
+.talkgroup-header {
+    margin-bottom: 6px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 6px;
+    transition: border-color 0.3s;
+}
+
+.talkgroup-title {
+    font-size: 1em;
+    font-weight: bold;
+    color: var(--text-color);
+    margin-right: 12px;
+    display: inline;
+    transition: color 0.3s;
+}
+
+.talkgroup-description {
+    color: var(--secondary-text);
+    font-size: 0.8em;
+    margin: 3px 0;
+    line-height: 1.2;
+    clear: both;
+    transition: color 0.3s;
+}
+
+.talkgroup-category {
+    display: inline-block;
+    background-color: var(--button-bg);
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-size: 0.7em;
+    color: var(--secondary-text);
+    margin-top: 3px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.talkgroup-tag {
+    display: inline;
+    background-color: var(--button-active);
+    color: white;
+    padding: 1px 4px;
+    border-radius: 6px;
+    font-size: 0.7em;
+    vertical-align: middle;
+    transition: background-color 0.3s;
+}
+
+/* Radio Indicators */
+.radio-container {
+    margin-top: 3px;
+    display: grid;
+    grid-template-columns: repeat(18, 12px);
+    grid-auto-rows: 10px;
+    gap: 3px;
+    width: 280px;
+    height: 40px;
+    overflow-y: auto;
+    background: var(--card-bg);
+    padding: 8px;
+    border-radius: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--button-active-rgb), 0.3) transparent;
+    transition: background-color 0.3s;
+}
+
+.radio-container::-webkit-scrollbar {
+    width: 3px;
+}
+
+.radio-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.radio-container::-webkit-scrollbar-thumb {
+    background-color: rgba(var(--button-active-rgb), 0.3);
+    border-radius: 2px;
+    transition: background-color 0.3s;
+}
+
+.radio {
+    width: 12px;
+    height: 12px;
+    background-color: var(--secondary-text);
+    border-radius: 50%;
+    transition: background-color 0.3s;
+}
+
+.radio.event-call {
+    background-color: var(--button-active);
+    box-shadow: 0 0 4px rgba(var(--button-active-rgb), 0.5);
+}
+
+.radio.event-join { background-color: #28a745; }
+.radio.event-location { background-color: #17a2b8; }
+.radio.event-data { background-color: #6f42c1; }
+.radio.event-ans_req { background-color: #fd7e14; }
+.radio.event-ackresp { background-color: #20c997; }
+.radio.event-on { background-color: #ffc107; }
+
+.county-filter {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    background: var(--button-bg);
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+}
+
+.county-button {
+    background: transparent;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.9em;
+    color: var(--secondary-text);
+    transition: all 0.2s ease;
+}
+
+.county-button:hover {
+    background: var(--button-hover);
+}
+
+.county-button.active {
+    background: var(--button-active);
+    color: white;
+}
+
+.county-button.active:hover {
+    background: var(--button-active-hover);
+}

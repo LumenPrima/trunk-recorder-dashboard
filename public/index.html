@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trunk Recorder Dashboard</title>
+    <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body>
+    <div class="header-container">
+        <h1>Trunk Recorder Dashboard</h1>
+        <div class="button-group">
+            <button id="themeToggle" class="theme-toggle"></button>
+            <div class="county-filter">
+                <button id="allCounties" class="county-button active">All</button>
+                <button id="hamcoFilter" class="county-button" data-county="hamco">Hamilton</button>
+                <button id="warcoFilter" class="county-button" data-county="warco">Warren</button>
+                <button id="butcoFilter" class="county-button" data-county="butco">Butler</button>
+                <button id="moncoFilter" class="county-button" data-county="monco">Montgomery</button>
+            </div>
+            <button id="filterButton" class="filter-button">
+                Show Active Only
+            </button>
+            <div class="sort-buttons">
+                <span>Sort by:</span>
+                <button class="sort-button active" data-sort="id">ID</button>
+                <button class="sort-button" data-sort="calls">Calls</button>
+                <button class="sort-button" data-sort="frequency">Frequency</button>
+                <button class="sort-button" data-sort="recent">Recent</button>
+            </div>
+            <button id="history30mButton" class="filter-button">
+                Load Last 30m
+            </button>
+            <button id="history2hButton" class="filter-button">
+                Load Last 2h
+            </button>
+            <button id="history6hButton" class="filter-button">
+                Load Last 6h
+            </button>
+            <button id="history12hButton" class="filter-button">
+                Load Last 12h
+            </button>
+            <div id="loadingProgress" class="loading-progress" style="display: none;">
+                <div class="progress-text">Loading history...</div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+        </div>
+        <div class="color-key">
+            <div class="key-item"><span class="key-dot call"></span>Call</div>
+            <div class="key-item"><span class="key-dot join"></span>Join</div>
+            <div class="key-item"><span class="key-dot location"></span>Location</div>
+            <div class="key-item"><span class="key-dot data"></span>Data</div>
+            <div class="key-item"><span class="key-dot ans_req"></span>Answer Req</div>
+            <div class="key-item"><span class="key-dot ackresp"></span>Ack Response</div>
+            <div class="key-item"><span class="key-dot on"></span>On</div>
+            <div class="key-item"><span class="key-dot default"></span>Default</div>
+        </div>
+    </div>
+    <div id="talkgroups"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // Initialize socket.io before modules
+        window.socketIo = io();
+    </script>
+    <script type="module">
+        import { RadioMonitor } from '/js/app.js';
+        
+        // Initialize after DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            const app = new RadioMonitor();
+            app.initialize();
+        });
+    </script>
+</body>
+</html>

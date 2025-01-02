@@ -1,0 +1,65 @@
+﻿{
+    "ver": 2,
+    "sources": [{
+        "center": 855000000.0,
+        "rate": 10000000.0,
+        "error": 0,
+        "mixGain": 14,
+        "ifGain": 8,
+        "lnaGain": 14,
+        "digitalRecorders": 20,
+        "driver": "osmosdr"
+    }],
+    "systems": [{
+        "shortName": "butco",
+        "control_channels": [853062500,853037500,853287500,853537500],
+        "type": "p25",
+        "modulation": "qpsk",
+        "talkgroupsFile": "trs_tg_6643.csv",
+        "transmissionArchive": true,
+        "compressWav": false,
+        "digitalLevels": 3,
+        "minDuration": 0.3,
+        "unitScript": "./log_mongo.sh"
+    },
+    {
+        "shortName": "hamco",
+        "control_channels": [851162500,851250000,851300000,853587500],
+        "type": "p25",
+        "modulation": "qpsk",
+        "talkgroupsFile": "trs_tg_6643.csv",
+        "transmissionArchive": true,
+        "compressWav": false,
+        "digitalLevels": 3,
+        "minDuration": 0.3,
+        "unitScript": "./log_mongo.sh"
+    },
+    {
+        "shortName": "monco",
+        "control_channels": [853325000,853600000,859462500,859962500],
+        "type": "p25",
+        "modulation": "qpsk",
+        "talkgroupsFile": "trs_tg_6643.csv",
+        "transmissionArchive": true,
+        "compressWav": false,
+        "digitalLevels": 3,
+        "minDuration": 0.3,
+        "unitScript": "./log_mongo.sh"
+    },
+    {
+        "shortName": "warco",
+        "control_channels": [858237500,858762500,859237500,859762500],
+        "type": "p25",
+        "modulation": "qpsk",
+        "talkgroupsFile": "trs_tg_6643.csv",
+        "transmissionArchive": true,
+        "compressWav": false,
+        "digitalLevels": 3,
+        "minDuration": 0.3,
+        "unitScript": "./log_mongo.sh"
+    }],
+    "logFile": true,
+    "logDir": "logs/",
+    "callTimeout": 1
+}
+
