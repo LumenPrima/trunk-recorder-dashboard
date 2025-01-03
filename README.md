@@ -7,215 +7,6 @@
 ## Overview
 A real-time radio monitoring dashboard that visualizes radio activity across different talkgroups. The application connects to a trunk_recorder MongoDB database to track radio events and displays them with contextual information from a RadioReference.com talkgroup metadata file. Features color-coded event tracking, activity statistics, visual feedback for recent events, filtering capabilities, and multiple sorting options.
 
-## Screenshots
-
-### Current Dashboard Features
-
-The dashboard provides a comprehensive real-time monitoring interface with the following features:
-
-#### Interface Controls
-- Theme toggle (light/dark mode)
-- County-based filtering:
-  - All counties view
-  - Hamilton County
-  - Warren County
-  - Butler County
-  - Montgomery County
-- Active/All talkgroups toggle
-- Multiple sorting options:
-  - ID (default)
-  - Calls count
-  - Call frequency
-  - Recent activity
-- Historical data loading options:
-  - Last 30 minutes
-  - Last 2 hours
-  - Last 6 hours
-  - Last 12 hours
-- Loading progress indicator with event count
-
-#### Talkgroup Display
-- Card-based layout with:
-  - Talkgroup ID and description
-  - Category and operational badges
-  - Real-time statistics (calls, frequency)
-  - Active radio indicators
-  - Timestamp information
-  - Visual feedback for events
-
-#### Event Visualization
-- Color-coded event types:
-  - Call (Blue with glow effect)
-  - Join (Green)
-  - Location (Cyan)
-  - Data (Purple)
-  - Answer Request (Orange)
-  - Acknowledgment Response (Teal)
-  - On (Yellow)
-  - Default (Gray)
-- Visual feedback with glow effects for recent events
-- Interactive radio indicators
-- Real-time updates with WebSocket connection
-
-The dashboard automatically populates with talkgroup metadata from the RadioReference.com CSV file and provides immediate visual feedback for all radio activities. The interface is designed for both monitoring active events and analyzing historical data, with comprehensive filtering and sorting capabilities.
-
-Note: The actual appearance may vary based on your system's theme settings and the current state of radio activity.
-
-## Prerequisites
-
-### Required Software
-- [trunk-recorder](https://github.com/robotastic/trunk-recorder) - For capturing radio system data
-- `jq` - For JSON processing in scripts
-- `mongosh` - MongoDB Shell for database operations
-- A valid [RadioReference.com](https://www.radioreference.com) account to download system talkgroup data
-
-### MongoDB Setup
-1. Install MongoDB Community Edition:
-   ```bash
-   # Ubuntu/Debian
-   sudo apt-get install mongodb-org
-
-   # macOS with Homebrew
-   brew tap mongodb/brew
-   brew install mongodb-community
-   ```
-
-2. Start MongoDB service:
-   ```bash
-   # Ubuntu/Debian
-   sudo systemctl start mongod
-
-   # macOS
-   brew services start mongodb-community
-   ```
-
-3. Create database and user:
-   ```bash
-   # Connect to MongoDB shell
-   mongosh
-
-   # Create database and switch to it
-   use trunk_recorder
-
-   # Create user for application
-   db.createUser({
-     user: "trunkrecorder",
-     pwd: "your_secure_password",
-     roles: [
-       { role: "readWrite", db: "trunk_recorder" }
-     ]
-   })
-
-   # Create user for logging script
-   db.createUser({
-     user: "eventlogger",
-     pwd: "another_secure_password",
-     roles: [
-       { role: "readWrite", db: "trunk_recorder" }
-     ]
-   })
-   ```
-
-4. Configure connection strings:
-   - For the application (.env file):
-     ```
-     MONGODB_URI=mongodb://trunkrecorder:your_secure_password@localhost:27017/trunk_recorder
-     ```
-   - For the logging script (.env file):
-     ```
-     MONGODB_URI=mongodb://eventlogger:another_secure_password@localhost:27017/trunk_recorder
-     ```
-
-5. Enable authentication:
-   ```bash
-   # Edit MongoDB configuration
-   sudo nano /etc/mongod.conf
-
-   # Add/modify security section
-   security:
-     authorization: enabled
-   ```
-
-6. Restart MongoDB service:
-   ```bash
-   # Ubuntu/Debian
-   sudo systemctl restart mongod
-
-   # macOS
-   brew services restart mongodb-community
-   ```
-
-### Talkgroup Data
-The application requires a CSV file containing talkgroup metadata for your radio system. This file can be downloaded from RadioReference.com for your specific area's radio system. The downloaded file should be named according to your trunk-recorder configuration (default: `trs_tg_6643.csv`).
-
-### Trunk Recorder Configuration
-The included `config.json` configures trunk-recorder to monitor multiple P25 radio systems. Key configuration includes:
-
-- SDR device settings (frequency, gain settings)
-- System definitions for each radio system:
-  - Control channel frequencies
-  - Talkgroup metadata file
-  - Logging configuration
-  - Audio recording settings
-
-Example system configuration:
-```json
-{
-    "shortName": "butco",
-    "control_channels": [853062500,853037500,853287500,853537500],
-    "type": "p25",
-    "modulation": "qpsk",
-    "talkgroupsFile": "trs_tg_6643.csv",
-    "transmissionArchive": true,
-    "compressWav": false,
-    "digitalLevels": 3,
-    "minDuration": 0.3,
-    "unitScript": "./log_mongo.sh"
-}
-```
-
-### Event Logging
-The `log_mongo.sh` script handles logging radio events to MongoDB. It's called by trunk-recorder for each radio event and includes:
-
-- Event deduplication within a 5-second window
-- Timestamp recording
-- System identification
-- Radio and talkgroup tracking
-- Debug logging capabilities
-
-To enable debug logging:
-```bash
-chmod +x log_mongo.sh
-./log_mongo.sh --debug <shortName> <radioID> <eventType> [talkgroup|source]
-```
-
-## Utility Scripts
-
-### analyze-history.js
-A utility script that analyzes historical radio events to provide insights about:
-- Event volume and frequency
-- Data size and memory impact
-- Event type distribution
-- Active talkgroups and radios
-- Performance metrics
-
-Usage:
-```bash
-node analyze-history.js
-```
-
-### capture.js
-A debugging utility that captures live radio events for a specified duration. Useful for:
-- Verifying event format and content
-- Debugging event processing
-- Testing MongoDB connectivity
-- Monitoring real-time activity
-
-Usage:
-```bash
-node capture.js
-```
-
 ## Features
 
 ### Real-time Event Monitoring
@@ -229,6 +20,19 @@ node capture.js
   - Acknowledgment Response (Teal)
   - On (Yellow)
   - Default (Gray)
+
+### Talkgroup History View
+- Click on any talkgroup card to view detailed history
+- Adaptive data loading:
+  - Shows either the most recent 200 events OR
+  - Events from the last 24 hours (whichever is less)
+- Displays list of all radios that have been affiliated
+- Chronological event list with:
+  - Event type with color coding
+  - Radio ID
+  - Timestamp
+- Modal interface with multiple close options
+- Optimized for both busy and quiet talkgroups
 
 ### Visual Feedback
 - Activity glow effects on talkgroup cards (30-second fade)
@@ -274,73 +78,6 @@ node capture.js
 - Category and tag information
 - County/department identification
 
-## Architecture
-
-### Backend (server.js)
-- **Framework**: Express.js
-- **Real-time Communication**: Socket.IO
-- **Database**: MongoDB
-- **Connection**: Configured via environment variables
-
-#### MongoDB Structure
-- **Database**: trunk_recorder
-- **Collection**: radio_events
-- **Event Types**: 
-  - `on`: Radio activation
-  - `join`: Radio joining talkgroup
-  - `off`: Radio deactivation
-  - `call`: Radio initiating call
-
-### Frontend
-#### Structure
-- `public/index.html`: Main HTML structure
-- `public/styles/main.css`: All application styles
-- `public/js/`: JavaScript modules
-  - `app.js`: Main application initialization
-  - `talkgroup-manager.js`: Data and state management
-  - `ui-manager.js`: UI rendering and updates
-
-#### Features
-- Modular JavaScript architecture
-- Real-time updates via WebSocket
-- Responsive card-based UI design
-- Interactive tooltips for radio information
-- Historical data loading with multiple time ranges
-- Active talkgroup filtering
-- Multiple sorting options for talkgroups
-
-## Data Formats
-
-### Talkgroup Metadata Format
-The RadioReference.com CSV export should contain the following columns:
-```
-Decimal,Hex,Alpha Tag,Mode,Description,Tag,Category
-```
-
-Example entry:
-```
-9000,2328,"09 HELP","D","Emergency Calling to COM PSAPs","Emergency Ops","Butler County (09) Common"
-```
-
-#### Fields:
-- **Decimal**: Numeric talkgroup ID
-- **Hex**: Hexadecimal representation
-- **Alpha Tag**: Human-readable talkgroup name
-- **Mode**: Operating mode (e.g., "D" for digital)
-- **Description**: Detailed talkgroup purpose
-- **Tag**: Operational classification
-- **Category**: Organizational grouping
-
-### Radio Events
-Events received from MongoDB change stream:
-```javascript
-{
-  eventType: string,        // 'on', 'join', 'off', 'call'
-  radioID: string,         // Unique radio identifier
-  talkgroupOrSource: string // Talkgroup ID
-}
-```
-
 ## API Endpoints
 
 ### GET /api/talkgroups
@@ -359,43 +96,29 @@ Returns JSON object mapping talkgroup IDs to their metadata:
 }
 ```
 
-## WebSocket Events
-
-### radioEvent
-Emitted when radio activity is detected:
+### GET /api/talkgroup/:id/history
+Returns detailed history for a specific talkgroup:
 ```javascript
 {
-  eventType: string,
-  radioID: string,
-  talkgroupOrSource: string,
-  talkgroupInfo: {
-    hex: string,
-    alphaTag: string,
-    mode: string,
-    description: string,
-    tag: string,
-    category: string
-  }
+  "talkgroupId": "9000",
+  "totalEvents": 157,
+  "uniqueRadios": ["1234", "5678", "9012"],
+  "events": [
+    {
+      "eventType": "call",
+      "radioID": "1234",
+      "timestamp": "2024-01-20T15:30:00Z",
+      "talkgroupInfo": {
+        "alphaTag": "09 HELP",
+        "description": "Emergency Calling to COM PSAPs",
+        // ... additional metadata
+      }
+    },
+    // ... additional events
+  ]
 }
 ```
-
-## UI Components
-
-### Talkgroup Cards
-Each talkgroup is displayed as a card containing:
-- Alpha Tag as title
-- Description
-- Category badge
-- Operational tag badge
-- Active radio indicators
-- Tooltips showing radio IDs
-
-### Styling
-- Light background (#f5f5f5)
-- Card-based layout with shadows
-- Color-coded badges for categories and tags
-- Interactive hover effects for radio indicators
-- Responsive design for various screen sizes
+Returns either the most recent 200 events or events from the last 24 hours, whichever results in fewer records.
 
 ## Installation & Setup
 
