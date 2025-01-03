@@ -62,6 +62,65 @@ app.get('/api/talkgroups', (req, res) => {
     res.json(talkgroupsObject);
 });
 
+// Endpoint to get talkgroup-specific history
+app.get('/api/talkgroup/:id/history', async (req, res) => {
+    try {
+        const client = new MongoClient(MONGO_URI, { useUnifiedTopology: true });
+        await client.connect();
+        const db = client.db(DB_NAME);
+        const collection = db.collection(COLLECTION_NAME);
+
+        const talkgroupId = req.params.id;
+        // Get last 24 hours of events for this talkgroup
+        const startTime = new Date(Date.now() - 24 * 60 * 60 * 1000)
+            .toISOString()
+            .replace(/\.\d{3}Z$/, 'Z');
+
+        // First get the most recent 200 records
+        const recentEvents = await collection
+            .find({
+                talkgroupOrSource: talkgroupId
+            })
+            .sort({ timestamp: -1 })
+            .limit(200)
+            .toArray();
+
+        // Then get events from last 24 hours
+        const dayEvents = await collection
+            .find({
+                talkgroupOrSource: talkgroupId,
+                timestamp: { $gte: startTime }
+            })
+            .sort({ timestamp: -1 })
+            .toArray();
+
+        // Use whichever result set is smaller
+        const events = recentEvents.length <= dayEvents.length ? recentEvents : dayEvents;
+
+        // Add metadata to events
+        events.forEach(event => {
+            const talkgroupInfo = talkgroupsMap.get(event.talkgroupOrSource?.toString());
+            if (talkgroupInfo) {
+                event.talkgroupInfo = talkgroupInfo;
+            }
+        });
+
+        // Get unique radios that have been affiliated
+        const uniqueRadios = [...new Set(events.map(event => event.radioID))];
+
+        res.json({
+            talkgroupId,
+            totalEvents: events.length,
+            uniqueRadios,
+            events: events
+        });
+        await client.close();
+    } catch (error) {
+        console.error('Error fetching talkgroup history:', error);
+        res.status(500).json({ error: 'Failed to fetch talkgroup history' });
+    }
+});
+
 // Endpoint to get historical events
 app.get('/api/history/:duration', async (req, res) => {
     try {

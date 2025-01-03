@@ -64,6 +64,9 @@ export class UIManager {
         const glowClass = glowState ? ` glow-${glowState}` : '';
         talkgroupDiv.className = `talkgroup${glowClass}`;
         
+        // Add click handler for history view
+        talkgroupDiv.addEventListener('click', () => this.showTalkgroupHistory(talkgroup));
+        
         talkgroupDiv.appendChild(this.createHeader(talkgroup));
         talkgroupDiv.appendChild(this.createRadioContainer(talkgroup, radios));
         
@@ -137,5 +140,61 @@ export class UIManager {
         };
         
         return `${first.toLocaleTimeString([], formatOptions)} - ${last.toLocaleTimeString([], formatOptions)}`;
+    }
+
+    async showTalkgroupHistory(talkgroup) {
+        const modal = document.getElementById('historyModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const affiliatedRadios = document.getElementById('affiliatedRadios');
+        const eventHistory = document.getElementById('eventHistory');
+        const metadata = this.talkgroupManager.getMetadata(talkgroup);
+
+        // Set modal title
+        modalTitle.textContent = `${metadata.alphaTag || `Talkgroup ${talkgroup}`} History`;
+
+        try {
+            // Fetch talkgroup history
+            const response = await fetch(`/api/talkgroup/${talkgroup}/history`);
+            const data = await response.json();
+
+            // Display affiliated radios
+            affiliatedRadios.innerHTML = data.uniqueRadios
+                .map(radioId => `
+                    <div class="radio-item">
+                        Radio ${radioId}
+                    </div>
+                `)
+                .join('');
+
+            // Display event history
+            eventHistory.innerHTML = data.events
+                .map(event => `
+                    <div class="event-item">
+                        <div>
+                            <span class="event-type ${event.eventType}">${event.eventType}</span>
+                            <span>Radio ${event.radioID}</span>
+                        </div>
+                        <span class="event-time">${new Date(event.timestamp).toLocaleTimeString()}</span>
+                    </div>
+                `)
+                .join('');
+
+            // Show modal
+            modal.style.display = 'block';
+
+            // Add close handler
+            const closeBtn = modal.querySelector('.close-modal');
+            closeBtn.onclick = () => modal.style.display = 'none';
+
+            // Close on outside click
+            window.onclick = (event) => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            };
+
+        } catch (error) {
+            console.error('Error fetching talkgroup history:', error);
+        }
     }
 }

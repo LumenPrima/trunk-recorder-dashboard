@@ -10,6 +10,7 @@
   --button-active: #007bff;
   --button-active-hover: #0056b3;
   --glow-opacity: 0.1;
+  --modal-overlay: rgba(0, 0, 0, 0.5);
 }
 
 [data-theme="dark"] {
@@ -24,6 +25,7 @@
   --button-active: #1a73e8;
   --button-active-hover: #1557b0;
   --glow-opacity: 0.3;
+  --modal-overlay: rgba(0, 0, 0, 0.7);
 }
 
 body {
@@ -235,6 +237,11 @@ body {
     vertical-align: top;
     position: relative;
     transition: background-color 0.3s, border-color 0.3s;
+    cursor: pointer;
+}
+
+.talkgroup:hover {
+    border-color: var(--button-active);
 }
 
 .talkgroup.glow-call { --glow-color: 0,123,255; animation: cardGlow 5s ease-out; }
@@ -406,3 +413,110 @@ body {
 .county-button.active:hover {
     background: var(--button-active-hover);
 }
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--modal-overlay);
+    z-index: 1000;
+}
+
+.modal-content {
+    position: relative;
+    background-color: var(--card-bg);
+    margin: 50px auto;
+    padding: 20px;
+    width: 80%;
+    max-width: 800px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: var(--text-color);
+}
+
+.close-modal {
+    font-size: 24px;
+    color: var(--secondary-text);
+    cursor: pointer;
+    padding: 5px;
+}
+
+.close-modal:hover {
+    color: var(--text-color);
+}
+
+.modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.history-section {
+    margin-bottom: 20px;
+}
+
+.history-section h3 {
+    color: var(--text-color);
+    margin-bottom: 10px;
+}
+
+.radio-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+    padding: 10px;
+    background: var(--bg-color);
+    border-radius: 4px;
+}
+
+.event-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.event-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    background: var(--bg-color);
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.event-time {
+    color: var(--secondary-text);
+    font-size: 0.8em;
+}
+
+.event-type {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    color: white;
+}
+
+.event-type.call { background-color: #007bff; }
+.event-type.join { background-color: #28a745; }
+.event-type.location { background-color: #17a2b8; }
+.event-type.data { background-color: #6f42c1; }
+.event-type.ans_req { background-color: #fd7e14; }
+.event-type.ackresp { background-color: #20c997; }
+.event-type.on { background-color: #ffc107; }

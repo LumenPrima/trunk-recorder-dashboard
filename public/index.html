@@ -60,6 +60,26 @@
     </div>
     <div id="talkgroups"></div>
 
+    <!-- Modal for talkgroup history -->
+    <div id="historyModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle"></h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="history-section">
+                    <h3>Affiliated Radios</h3>
+                    <div id="affiliatedRadios" class="radio-list"></div>
+                </div>
+                <div class="history-section">
+                    <h3>Recent Events</h3>
+                    <div id="eventHistory" class="event-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script>
         // Initialize socket.io before modules
